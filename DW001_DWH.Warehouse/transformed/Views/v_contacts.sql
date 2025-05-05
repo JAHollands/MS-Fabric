@@ -1,0 +1,5 @@
+-- Auto Generated (Do not modify) 113F9D50613ED319E21F58FDBB749EE318109D6A9B91B5D4981DAB1C87395E91
+CREATE VIEW transformed.v_contacts
+AS
+SELECT *
+FROM transformed.contacts

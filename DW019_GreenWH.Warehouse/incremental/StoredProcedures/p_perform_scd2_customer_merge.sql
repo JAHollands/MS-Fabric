@@ -1,0 +1,4 @@
+CREATE PROCEDURE incremental.p_perform_scd2_customer_merge AS
+EXEC [incremental].[p_scd2_bulk_update_modified_customer_records]
+EXEC incremental.p_scd2_bulk_insert_new_customer_records
+EXEC incremental.p_scd2_bulk_delete_customer_records

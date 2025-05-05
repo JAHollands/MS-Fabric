@@ -1,0 +1,120 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Set variable1",
+        "type": "SetVariable",
+        "dependsOn": [],
+        "policy": {
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "variableName": "var_utc_now",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "Stored procedure1",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Set variable1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[metadata].[p_get_watermark_value]",
+          "storedProcedureParameters": {
+            "PipelineID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "DW001_DWH",
+          "properties": {
+            "annotations": [],
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "endpoint": "wazt3xxk43yetnglgfabcjskxy-eebyztm6pyaetgzgt67xo66fga.datawarehouse.fabric.microsoft.com",
+              "artifactId": "53789e53-0032-446a-b898-919fd20a8b5f",
+              "workspaceId": "cd8c0321-7e9e-4900-9b26-9fbf777bc530"
+            }
+          }
+        }
+      },
+      {
+        "name": "Stored procedure2",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Stored procedure1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[metadata].[p_set_watermark_value]",
+          "storedProcedureParameters": {
+            "PipelineID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "WatermarkValue": {
+              "value": {
+                "value": "@variables('var_utc_now')",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "DW001_DWH",
+          "properties": {
+            "annotations": [],
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "endpoint": "wazt3xxk43yetnglgfabcjskxy-eebyztm6pyaetgzgt67xo66fga.datawarehouse.fabric.microsoft.com",
+              "artifactId": "53789e53-0032-446a-b898-919fd20a8b5f",
+              "workspaceId": "cd8c0321-7e9e-4900-9b26-9fbf777bc530"
+            }
+          }
+        }
+      }
+    ],
+    "variables": {
+      "var_utc_now": {
+        "type": "String"
+      }
+    }
+  }
+}
